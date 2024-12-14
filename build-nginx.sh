@@ -79,7 +79,7 @@ curl -L "${source_nginx}${version_nginx}.tar.gz.asc" -o "${bpath}/nginx.tar.gz.a
 cd "$bpath"
 GNUPGHOME="$(mktemp -d)"
 export GNUPGHOME
-gpg --keyserver keyserver.ubuntu.com --recv-keys "$opgp_pcre" "$opgp_zlib" "$opgp_openssl_1" "$opgp_openssl_2" "$opgp_openssl_3" "$opgp_openssl_4" "$opgp_openssl_5" "opgp_openssl_6" "$opgp_nginx"
+gpg --keyserver keyserver.ubuntu.com --recv-keys "$opgp_pcre" "$opgp_zlib" "$opgp_openssl_1" "$opgp_openssl_2" "$opgp_openssl_3" "$opgp_openssl_4" "$opgp_openssl_5" "$opgp_openssl_6" "$opgp_nginx"
 gpg --batch --verify pcre.tar.gz.sig pcre.tar.gz
 gpg --batch --verify zlib.tar.gz.asc zlib.tar.gz
 gpg --batch --verify openssl.tar.gz.asc openssl.tar.gz
