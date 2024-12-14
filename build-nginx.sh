@@ -12,7 +12,7 @@ set -e -x
 # Ensure curl is installed
 apt-get update && apt-get install curl jq -y
 
-GH_API_HEADER='-H "X-GitHub-Api-Version: 2022-11-28"'
+GH_API_HEADER=-H "X-GitHub-Api-Version: 2022-11-28"
 
 # Set URLs to the source directories
 REPO_PCRE="PCRE2Project/pcre2"
