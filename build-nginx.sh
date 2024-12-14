@@ -171,7 +171,7 @@ cd "$bpath/$version_nginx"
 	--without-mail_imap_module \
 	--without-mail_pop3_module \
 	--without-mail_smtp_module
-make
+make -j"$(nproc)"
 make install
 make clean
 strip -s /usr/sbin/nginx*
