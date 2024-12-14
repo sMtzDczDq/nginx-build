@@ -19,13 +19,13 @@ REPO_PCRE="PCRE2Project/pcre2"
 PCRE_TAR=$(
 	curl --silent -H "Accept: application/vnd.github+json" $GH_API_HEADER --url https://api.github.com/repos/"$REPO_PCRE"/releases/latest --output - | jq -r '.assets[]|select(.content_type == "application/gzip")|.browser_download_url'
 )
-source_pcre=https://onboardcloud.dl.sourceforge.net/project/pcre/pcre/8.45/
+#source_pcre=https://onboardcloud.dl.sourceforge.net/project/pcre/pcre/8.45/
 source_zlib=https://zlib.net/
 source_openssl=https://www.openssl.org/source/
 source_nginx=https://nginx.org/download/
 
 # Look up latest versions of each package
-version_pcre=pcre-8.45
+#version_pcre=pcre-8.45
 version_zlib=$(curl -sL ${source_zlib} | grep -Eo 'zlib\-[0-9.]+[0-9]' | sort -V | tail -n 1)
 version_openssl=$(curl -sL ${source_openssl} | grep -Po 'openssl\-[0-9]+\.[0-9]+\.[0-9]+[a-z]?(?=\.tar\.gz)' | sort -V | tail -n 1)
 version_nginx=$(curl -sL ${source_nginx} | grep -Eo 'nginx\-[0-9.]+[13579]\.[0-9]+' | sort -V | tail -n 1)
@@ -68,7 +68,8 @@ curl -L "${source_openssl}${version_openssl}.tar.gz" -o "${bpath}/openssl.tar.gz
 curl -L "${source_nginx}${version_nginx}.tar.gz" -o "${bpath}/nginx.tar.gz"
 
 # Download the signature files
-curl -L "${source_pcre}${version_pcre}.tar.gz.sig" -o "${bpath}/pcre.tar.gz.sig"
+#curl -L "${source_pcre}${version_pcre}.tar.gz.sig" -o "${bpath}/pcre.tar.gz.sig"
+curl -L "$PCRE_TAR".sig -o "${bpath}/pcre.tar.gz.sig"
 curl -L "${source_zlib}${version_zlib}.tar.gz.asc" -o "${bpath}/zlib.tar.gz.asc"
 curl -L "${source_openssl}${version_openssl}.tar.gz.asc" -o "${bpath}/openssl.tar.gz.asc"
 curl -L "${source_nginx}${version_nginx}.tar.gz.asc" -o "${bpath}/nginx.tar.gz.asc"
