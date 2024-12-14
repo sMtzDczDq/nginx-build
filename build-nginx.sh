@@ -17,7 +17,7 @@ GH_API_HEADER='-H "X-GitHub-Api-Version: 2022-11-28"'
 # Set URLs to the source directories
 REPO_PCRE="PCRE2Project/pcre2"
 PCRE_TAR=$(
-	curl --verbose -H "Accept: application/vnd.github+json" "$GH_API_HEADER" --url https://api.github.com/repos/"$REPO_PCRE"/releases/latest --output - | jq '.assets[]|select(.content_type == "application/gzip")|.browser_download_url'
+	curl --silent -H "Accept: application/vnd.github+json" "$GH_API_HEADER" --url https://api.github.com/repos/"$REPO_PCRE"/releases/latest --output - | jq '.assets[]|select(.content_type == "application/gzip")|.browser_download_url'
 )
 source_pcre=https://onboardcloud.dl.sourceforge.net/project/pcre/pcre/8.45/
 source_zlib=https://zlib.net/
