@@ -76,7 +76,7 @@ curl -L "$PCRE_TAR".sig -o "${bpath}/pcre.tar.gz.sig"
 curl -L "${source_zlib}${version_zlib}.tar.gz.asc" -o "${bpath}/zlib.tar.gz.asc"
 curl -L "${source_openssl}${version_openssl}.tar.gz.asc" -o "${bpath}/openssl.tar.gz.asc"
 curl -L "${source_nginx}${version_nginx}.tar.gz.asc" -o "${bpath}/nginx.tar.gz.asc"
-
+#curl -L "https://github.com/maxmind/libmaxminddb/releases/download/1.11.0/libmaxminddb-1.11.0.tar.gz" -o libmaxminddb.tar.gz
 # Verify the integrity and authenticity of the source files through their OpenPGP signature
 cd "$bpath"
 GNUPGHOME="$(mktemp -d)"
@@ -169,7 +169,6 @@ cd "$bpath/$version_nginx"
 	--with-stream_ssl_preread_module \
 	--with-threads \
 	--without-http_empty_gif_module \
-	--with-http_geoip_module \
 	--without-http_split_clients_module \
 	--without-http_ssi_module \
 	--without-mail_imap_module \
