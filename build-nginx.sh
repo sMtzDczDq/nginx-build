@@ -12,12 +12,12 @@ set -e -x
 # Ensure curl is installed
 apt-get update && apt-get install curl jq -y
 
-GH_API_HEADER='-H "X-GitHub-Api-Version: 2022-11-28"'
+GH_API_HEADER="X-GitHub-Api-Version:2026-03-10"
 
 # Set URLs to the source directories
 REPO_PCRE="PCRE2Project/pcre2"
 PCRE_TAR=$(
-	curl --silent -H "Accept: application/vnd.github+json" $GH_API_HEADER --url https://api.github.com/repos/"$REPO_PCRE"/releases/latest --output - | jq -r '.assets[]|select(.content_type == "application/gzip")|.browser_download_url'
+	curl --silent -H "Accept: application/vnd.github+json" -H "$GH_API_HEADER" --url https://api.github.com/repos/"$REPO_PCRE"/releases/latest --output - | jq -r '.assets[]|select(.content_type == "application/x-gzip")|.browser_download_url'
 )
 #source_pcre=https://onboardcloud.dl.sourceforge.net/project/pcre/pcre/8.45/
 source_zlib=https://zlib.net/
@@ -31,7 +31,7 @@ version_openssl=$(curl -sL ${source_openssl} | grep -Po 'openssl\-[0-9]+\.[0-9]+
 version_nginx=$(curl -sL ${source_nginx} | grep -Eo 'nginx\-[0-9.]+[13579]\.[0-9]+' | sort -V | tail -n 1)
 
 # Set OpenPGP keys used to sign downloads
-opgp_pcre=45F68D54BBE23FB3039B46E59766E084FB0F43D8
+opgp_pcre=A95536204A3BB489715231282A98E77EB6F24CA8
 opgp_zlib=5ED46A6721D365587791E2AA783FCD8E58BCAFBA
 opgp_openssl_1=8657ABB260F056B1E5190839D9C4D26D0E604491 #Matt Caswell
 opgp_openssl_2=B7C1C14360F353A36862E4D5231C84CDDCC69C45 #Paul Dale
@@ -41,7 +41,10 @@ opgp_openssl_5=EFC0A467D613CB83C7ED6D30D894E2CE8B3D79F5 #OpenSSL OMC
 opgp_openssl_6=BA5473A2B0587B07FB27CF2D216094DFD0CB81EF
 opgp_nginx_1=13C82A63B603576156E30A4EA0EA981B66B0D967
 opgp_nginx_2=D6786CE303D9A9022998DC6CC8464D549AF75C0A
-
+opgp_nginx_3=43387825DDB1BB97EC36BA5D007C8D7C15D87369
+opgp_nginx_4=8540A6F18833A80E9C1653A42FD21310B49F6B46
+opgp_nginx_5=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
+opgp_nginx_6=9E9BE90EACBCDE69FE9B204CBCDCD8A38D88A2B3
 
 # Set where OpenSSL and NGINX will be built
 bpath=$(pwd)/build
@@ -81,7 +84,7 @@ curl -L "${source_nginx}${version_nginx}.tar.gz.asc" -o "${bpath}/nginx.tar.gz.a
 cd "$bpath"
 GNUPGHOME="$(mktemp -d)"
 export GNUPGHOME
-gpg --keyserver keyserver.ubuntu.com --recv-keys "$opgp_pcre" "$opgp_zlib" "$opgp_openssl_1" "$opgp_openssl_2" "$opgp_openssl_3" "$opgp_openssl_4" "$opgp_openssl_5" "$opgp_openssl_6" "$opgp_nginx_1" "$opgp_nginx_2"
+gpg --keyserver keyserver.ubuntu.com --recv-keys "$opgp_pcre" "$opgp_zlib" "$opgp_openssl_1" "$opgp_openssl_2" "$opgp_openssl_3" "$opgp_openssl_4" "$opgp_openssl_5" "$opgp_openssl_6" "$opgp_nginx_1" "$opgp_nginx_2" "$opgp_nginx_3" "$opgp_nginx_4" "$opgp_nginx_5" "$opgp_nginx_6"
 gpg --batch --verify pcre.tar.gz.sig pcre.tar.gz
 gpg --batch --verify zlib.tar.gz.asc zlib.tar.gz
 gpg --batch --verify openssl.tar.gz.asc openssl.tar.gz
