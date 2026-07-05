@@ -107,18 +107,18 @@ if [ -d "/etc/nginx" ]; then
 fi
 
 # Create NGINX cache directories if they do not already exist
-if [ ! -d "/var/cache/nginx/" ]; then
+if [ ! -d "/var/lib/nginx/" ]; then
 	mkdir -p \
-		/var/cache/nginx/client_temp \
-		/var/cache/nginx/proxy_temp \
-		/var/cache/nginx/fastcgi_temp \
-		/var/cache/nginx/uwsgi_temp \
-		/var/cache/nginx/scgi_temp
+		/var/lib/nginx/client \
+		/var/lib/nginx/proxy \
+		/var/lib/nginx/fastcgi \
+		/var/lib/nginx/uwsgi \
+		/var/lib/nginx/scgi
 fi
 
 # Add NGINX group and user if they do not already exist
 id -g nginx &>/dev/null || addgroup --system nginx
-id -u nginx &>/dev/null || adduser --disabled-password --system --home /var/cache/nginx --shell /sbin/nologin --group nginx
+id -u nginx &>/dev/null || adduser --disabled-password --system --home /var/lib/nginx --shell /sbin/nologin --group nginx
 
 # Test to see if our version of gcc supports __SIZEOF_INT128__
 if gcc -dM -E - </dev/null | grep -q __SIZEOF_INT128__; then
@@ -130,32 +130,34 @@ fi
 # Build NGINX, with various modules included/excluded
 cd "$bpath/$version_nginx"
 ./configure \
-	--prefix=/etc/nginx \
-	--with-cc-opt="-O3 -fPIE -fstack-protector-strong -Wformat -Werror=format-security" \
-	--with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro" \
-	--with-pcre="$bpath/$version_pcre" \
-	--with-zlib="$bpath/$version_zlib" \
-	--with-openssl-opt="no-weak-ssl-ciphers no-ssl3 no-shared $ecflag -DOPENSSL_NO_HEARTBEATS -fstack-protector-strong" \
-	--with-openssl="$bpath/$version_openssl" \
-	--sbin-path=/usr/sbin/nginx \
-	--modules-path=/usr/lib/nginx/modules \
 	--conf-path=/etc/nginx/nginx.conf \
-	--error-log-path=/var/log/nginx/error.log \
+	--error-log-path=stderr \
+	--http-client-body-temp-path=/var/lib/nginx/body \
+	--http-fastcgi-temp-path=/var/lib/nginx/fastcgi \
 	--http-log-path=/var/log/nginx/access.log \
-	--pid-path=/var/run/nginx.pid \
-	--lock-path=/var/run/nginx.lock \
-	--http-client-body-temp-path=/var/cache/nginx/client_temp \
-	--http-proxy-temp-path=/var/cache/nginx/proxy_temp \
-	--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
-	--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \
-	--http-scgi-temp-path=/var/cache/nginx/scgi_temp \
-	--user=nginx \
-	--group=nginx \
+	--http-proxy-temp-path=/var/lib/nginx/proxy \
+	--http-scgi-temp-path=/var/lib/nginx/scgi \
+	--http-uwsgi-temp-path=/var/lib/nginx/uwsgi \
+	--lock-path=/var/lock/nginx.lock \
+	--modules-path=/usr/lib/nginx/modules \
+	--pid-path=/run/nginx.pid \
+	--prefix=/usr/share/nginx \
+	--sbin-path=/usr/sbin/nginx \
+	--with-cc-opt="-g -O2 -Werror=implicit-function-declaration -fstack-protector-strong -fstack-clash-protection -Wformat -Werror=format-security -fcf-protection -fPIC -Wdate-time -D_FORTIFY_SOURCE=2" \
+	--with-compat \
+	--with-debug \
 	--with-file-aio \
+	--with-http_addition_module \
 	--with-http_auth_request_module \
+	--with-http_dav_module \
+	--with-http_flv_module \
+	--with-http_geoip_module=dynamic \
 	--with-http_gunzip_module \
 	--with-http_gzip_static_module \
+	--with-http_image_filter_module=dynamic \
 	--with-http_mp4_module \
+	--with-http_perl_module=dynamic \
+	--with-http_random_index_module \
 	--with-http_realip_module \
 	--with-http_secure_link_module \
 	--with-http_slice_module \
@@ -164,18 +166,29 @@ cd "$bpath/$version_nginx"
 	--with-http_sub_module \
 	--with-http_v2_module \
 	--with-http_v3_module \
+	--with-http_xslt_module=dynamic \
+	--with-ld-opt='-Wl,-z,relro -Wl,-z,now -fPIC' \
+	--with-mail_ssl_module \
+	--with-mail=dynamic \
+	--with-openssl-opt="no-weak-ssl-ciphers no-ssl3 no-shared $ecflag -DOPENSSL_NO_HEARTBEATS -fstack-protector-strong" \
+	--with-openssl="$bpath/$version_openssl" \
 	--with-pcre-jit \
+	--with-pcre="$bpath/$version_pcre" \
 	--with-stream \
-	--with-stream_ssl_module \
+	--with-stream_geoip_module=dynamic \
 	--with-stream_realip_module \
+	--with-stream_ssl_module \
 	--with-stream_ssl_preread_module \
+	--with-stream=dynamic \
 	--with-threads \
+	--with-zlib="$bpath/$version_zlib" \
 	--without-http_empty_gif_module \
 	--without-http_split_clients_module \
 	--without-http_ssi_module \
 	--without-mail_imap_module \
 	--without-mail_pop3_module \
 	--without-mail_smtp_module
+
 make -j"$(nproc)"
 make install
 make clean
