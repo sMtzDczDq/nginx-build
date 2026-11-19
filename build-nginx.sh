@@ -39,6 +39,7 @@ opgp_openssl_3=7953AC1FBC3DC8B3B292393ED5E9E43F7DF9EE8C #Richaard Levitte
 opgp_openssl_4=A21FAB74B0088AA361152586B8EF1A6BA9DA2D5C #Tomas Mrax
 opgp_openssl_5=EFC0A467D613CB83C7ED6D30D894E2CE8B3D79F5 #OpenSSL OMC
 opgp_openssl_6=BA5473A2B0587B07FB27CF2D216094DFD0CB81EF
+opgp_openssl_7=B146647E45A7B33947AB226B2A2C87D161692D40
 opgp_nginx_1=13C82A63B603576156E30A4EA0EA981B66B0D967
 opgp_nginx_2=D6786CE303D9A9022998DC6CC8464D549AF75C0A
 opgp_nginx_3=43387825DDB1BB97EC36BA5D007C8D7C15D87369
@@ -84,7 +85,7 @@ curl -L "${source_nginx}${version_nginx}.tar.gz.asc" -o "${bpath}/nginx.tar.gz.a
 cd "$bpath"
 GNUPGHOME="$(mktemp -d)"
 export GNUPGHOME
-gpg --keyserver keyserver.ubuntu.com --recv-keys "$opgp_pcre" "$opgp_zlib" "$opgp_openssl_1" "$opgp_openssl_2" "$opgp_openssl_3" "$opgp_openssl_4" "$opgp_openssl_5" "$opgp_openssl_6" "$opgp_nginx_1" "$opgp_nginx_2" "$opgp_nginx_3" "$opgp_nginx_4" "$opgp_nginx_5" "$opgp_nginx_6"
+gpg --keyserver keyserver.ubuntu.com --recv-keys "$opgp_pcre" "$opgp_zlib" "$opgp_openssl_1" "$opgp_openssl_2" "$opgp_openssl_3" "$opgp_openssl_4" "$opgp_openssl_5" "$opgp_openssl_6" "$opgp_openssl_7" "$opgp_nginx_1" "$opgp_nginx_2" "$opgp_nginx_3" "$opgp_nginx_4" "$opgp_nginx_5" "$opgp_nginx_6"
 gpg --batch --verify pcre.tar.gz.sig pcre.tar.gz
 gpg --batch --verify zlib.tar.gz.asc zlib.tar.gz
 gpg --batch --verify openssl.tar.gz.asc openssl.tar.gz
